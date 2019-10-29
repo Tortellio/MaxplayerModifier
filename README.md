@@ -5,8 +5,8 @@ Dynamic Max Players plugin for Rocketmod Unturned
 This plugin extend and shrink server max players automatically based on percentage condition.
 
 ### Features
-- You can restrict players from equipping any skin.
-- Configurable restrict option.
+- Automatically extend and shrink your server maxplayer
+- Has a command to force set maxplayer to certain number
 
 ### Commands
 __/mp <amount>__ – Force set server max player
