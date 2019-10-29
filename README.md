@@ -11,6 +11,7 @@ This plugin extend and shrink server max players automatically based on percenta
 ### Commands
 __/mp <amount>__ – Force set server max player
   > Permission: maxplayer
+  
 **/mps** – Check current server max player
   > Permission: maxplayer.check
 
