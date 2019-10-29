@@ -13,6 +13,8 @@ namespace Tortellio.DynamicMaxPlayers
     public class DynamicMaxPlayers : RocketPlugin<Config>
     {
         public static DynamicMaxPlayers Instance;
+		public static string PluginName = "DynamicMaxPlayers";
+        public static string PluginVersion = "1.0.0";
         private DateTime lastCalled;
         public Color Color;
         public byte oldMaxPlayer;
@@ -22,6 +24,8 @@ namespace Tortellio.DynamicMaxPlayers
             Instance = this;
             oldMaxPlayer = Provider.maxPlayers;
             Logger.Log("DynamicMaxPlayer has been loaded!");
+			Logger.Log(PluginName + PluginVersion, ConsoleColor.Yellow);
+            Logger.Log("Made by Tortellio", ConsoleColor.Yellow);
             if (!Configuration.Instance.Enable)
             {
                 Logger.Log("DynamicMaxPlayer is disabled in configuration!");
@@ -35,6 +39,7 @@ namespace Tortellio.DynamicMaxPlayers
             Instance = null;
             Provider.maxPlayers = oldMaxPlayer;
             Logger.Log("DynamicMaxPlayer has been unloaded!");
+			Logger.Log("Visit Tortellio Discord for more! https://discord.gg/pzQwsew");
             if (!Configuration.Instance.Enable) { return; }
             Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + "Players)");
         }
