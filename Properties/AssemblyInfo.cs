@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DynamicMaxPlayers")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Made by Tortellio")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Tortellio")]
 [assembly: AssemblyProduct("DynamicMaxPlayers")]
 [assembly: AssemblyCopyright("Copyright © 2019 Tortellio")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Tortellio")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
