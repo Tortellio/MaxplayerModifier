@@ -16,7 +16,6 @@ namespace Tortellio.DynamicMaxPlayers
 		public static string PluginName = "DynamicMaxPlayers";
         public static string PluginVersion = "1.0.0";
         private DateTime lastCalled;
-        public Color Color;
         public byte oldMaxPlayer;
         public byte forceMaxPlayer = 0;
         protected override void Load()
@@ -28,10 +27,10 @@ namespace Tortellio.DynamicMaxPlayers
             Logger.Log("Made by Tortellio", ConsoleColor.Yellow);
             if (!Configuration.Instance.Enable)
             {
-                Logger.Log("DynamicMaxPlayer is disabled in configuration!");
+                Logger.Log("DynamicMaxPlayer is disabled in configuration!", ConsoleColor.Red);
                 return;
             }
-            Logger.Log("Server Max Players changed to " + Provider.maxPlayers.ToString() + "Players");
+            Logger.Log("Server Max Players changed to " + Provider.maxPlayers.ToString() + "Players", ConsoleColor.Yellow);
         }
 
         protected override void Unload()
@@ -39,11 +38,11 @@ namespace Tortellio.DynamicMaxPlayers
             Instance = null;
             Provider.maxPlayers = oldMaxPlayer;
             Logger.Log("DynamicMaxPlayer has been unloaded!");
-			Logger.Log("Visit Tortellio Discord for more! https://discord.gg/pzQwsew");
+			Logger.Log("Visit Tortellio Discord for more! https://discord.gg/pzQwsew", ConsoleColor.Yellow);
             if (!Configuration.Instance.Enable) { return; }
-            Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + "Players)");
+            Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + "Players)", ConsoleColor.Yellow);
         }
-        public void Say(UnturnedPlayer player, string key, params object[] args) => UnturnedChat.Say(player, Translate(key, args), Color);
+        public void Say(UnturnedPlayer player, string key, params object[] args) => UnturnedChat.Say(player, Translate(key, args));
         public override TranslationList DefaultTranslations => new TranslationList()
         {
             { "mp_set", "Succesfully set max player to : " },
