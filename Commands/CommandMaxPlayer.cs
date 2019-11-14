@@ -1,40 +1,41 @@
 ﻿using Rocket.API;
-using Rocket.Unturned.Player;
 using System.Collections.Generic;
 using System.Linq;
 using SDG.Unturned;
+using Rocket.Unturned.Chat;
+
 namespace Tortellio.DynamicMaxPlayers.Commands
 {
     public class CommandMaxPlayer : IRocketCommand
     {
-        public string Name => "maxplayer";
+        public string Name => "setmaxplayers";
         public string Help => "Set server max players";
         public string Syntax => "<amount>";
         public List<string> Aliases => new List<string>() { "setmp", "mp" };
         public List<string> Permissions => new List<string>() { "maxplayer" };
-        public AllowedCaller AllowedCaller => AllowedCaller.Player;
+        public AllowedCaller AllowedCaller => AllowedCaller.Both;
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            UnturnedPlayer player = (UnturnedPlayer)caller;
-
+            
             if (command.Length != 1)
             {
-                DynamicMaxPlayers.Instance.Say(player, "mp_usage");
+                UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mp_usage"));
                 return;
             }
             if (!command[0].All(char.IsDigit) || !byte.TryParse(command[0], out byte maxPlayer))
             {
-                DynamicMaxPlayers.Instance.Say(player, "mp_error");
+                UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mp_error"));
                 return;
             }
             if (maxPlayer == 0)
             {
-                DynamicMaxPlayers.Instance.Say(player, "mp_set_normal");
+                UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mp_set_normal"));
                 DynamicMaxPlayers.Instance.forceMaxPlayer = maxPlayer;
                 return;
             }
+            Provider.maxPlayers = maxPlayer;
             DynamicMaxPlayers.Instance.forceMaxPlayer = maxPlayer;
-            DynamicMaxPlayers.Instance.Say(player, "mp_set" + maxPlayer.ToString() + " players");
+            UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mp_set") + maxPlayer.ToString() + " players");
         }
     }
 }

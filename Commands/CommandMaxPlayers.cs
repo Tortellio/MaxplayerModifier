@@ -1,27 +1,27 @@
 ﻿using Rocket.API;
-using Rocket.Unturned.Player;
 using System.Collections.Generic;
 using SDG.Unturned;
+using Rocket.Unturned.Chat;
+
 namespace Tortellio.DynamicMaxPlayers.Commands
 {
     public class CommandMaxPlayers : IRocketCommand
     {
-        public string Name => "mplayers";
+        public string Name => "checkmaxplayers";
         public string Help => "Check server max players";
         public string Syntax => "";
-        public List<string> Aliases => new List<string>() { "mps" };
+        public List<string> Aliases => new List<string>() { "checkmp", "mps" };
         public List<string> Permissions => new List<string>() { "maxplayer.check" };
-        public AllowedCaller AllowedCaller => AllowedCaller.Player;
+        public AllowedCaller AllowedCaller => AllowedCaller.Both;
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            UnturnedPlayer player = (UnturnedPlayer)caller;
 
             if (command.Length != 0)
             {
-                DynamicMaxPlayers.Instance.Say(player, "mps_usage");
+                UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mps_usage"));
                 return;
             }
-            DynamicMaxPlayers.Instance.Say(player, "mps" + Provider.maxPlayers.ToString() + " players");
+            UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mps") + Provider.maxPlayers.ToString() + " players");
         }
     }
 }

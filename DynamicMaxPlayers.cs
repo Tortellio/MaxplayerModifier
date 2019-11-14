@@ -14,7 +14,7 @@ namespace Tortellio.DynamicMaxPlayers
     {
         public static DynamicMaxPlayers Instance;
 		public static string PluginName = "DynamicMaxPlayers";
-        public static string PluginVersion = "1.0.0";
+        public static string PluginVersion = " 1.0.0";
         private DateTime lastCalled;
         public byte oldMaxPlayer;
         public byte forceMaxPlayer = 0;
@@ -30,7 +30,7 @@ namespace Tortellio.DynamicMaxPlayers
                 Logger.Log("DynamicMaxPlayer is disabled in configuration!", ConsoleColor.Red);
                 return;
             }
-            Logger.Log("Server Max Players changed to " + Provider.maxPlayers.ToString() + "Players", ConsoleColor.Yellow);
+            Logger.Log("Server Max Players changed to " + Provider.maxPlayers.ToString() + " Players", ConsoleColor.Yellow);
         }
 
         protected override void Unload()
@@ -40,9 +40,8 @@ namespace Tortellio.DynamicMaxPlayers
             Logger.Log("DynamicMaxPlayer has been unloaded!");
 			Logger.Log("Visit Tortellio Discord for more! https://discord.gg/pzQwsew", ConsoleColor.Yellow);
             if (!Configuration.Instance.Enable) { return; }
-            Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + "Players)", ConsoleColor.Yellow);
+            Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + " Players)", ConsoleColor.Yellow);
         }
-        public void Say(UnturnedPlayer player, string key, params object[] args) => UnturnedChat.Say(player, Translate(key, args));
         public override TranslationList DefaultTranslations => new TranslationList()
         {
             { "mp_set", "Succesfully set max player to : " },
@@ -60,12 +59,14 @@ namespace Tortellio.DynamicMaxPlayers
             if ((DateTime.Now - lastCalled).TotalSeconds > 1)
             {
                 lastCalled = DateTime.Now;
-                decimal valueMin = Configuration.Instance.ChangeMaxPlayerPercentage / 100;
-                int maxPlayers = Convert.ToInt32(Math.Round(valueMin * Provider.maxPlayers));
-                if (Provider.clients.Count >= maxPlayers && Provider.maxPlayers + Configuration.Instance.IncreasedMaxPlayersAmount < 255)
+                if (Provider.clients.Count >= (Provider.maxPlayers - 1) && (Provider.maxPlayers + Configuration.Instance.IncreasedMaxPlayersAmount) < 255)
+                {
                     Provider.maxPlayers = (byte)(Provider.maxPlayers + Configuration.Instance.IncreasedMaxPlayersAmount);
-                else if (Provider.clients.Count <= Provider.maxPlayers - Configuration.Instance.IncreasedMaxPlayersAmount)
+                }    
+                else if (Provider.clients.Count <= (Provider.maxPlayers - Configuration.Instance.IncreasedMaxPlayersAmount) && Provider.maxPlayers > oldMaxPlayer)
+                {
                     Provider.maxPlayers = (byte)(Provider.maxPlayers - Configuration.Instance.IncreasedMaxPlayersAmount);
+                }
             }
         }
     }
