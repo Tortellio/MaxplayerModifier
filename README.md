@@ -1,5 +1,5 @@
 # DynamicMaxPlayers
-Dynamic Max Players plugin for Rocketmod Unturned
+a Rocketmod Unturned Plugin
 
 ### About Plugin
 This plugin extend and shrink server max players automatically based on percentage condition.
