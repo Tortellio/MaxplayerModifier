@@ -5,11 +5,15 @@ namespace Tortellio.DynamicMaxPlayers
     public class Config : IRocketPluginConfiguration
     {
         public bool Enable;
-        public byte IncreasedMaxPlayersAmount;
+        public byte MaxSlots;
+        public bool MaxPlayerOnStartEnable;
+        public byte MaxPlayerOnStart;
         public void LoadDefaults()
         {
             Enable = true;
-            IncreasedMaxPlayersAmount = 24;
+            MaxSlots = 48;
+            MaxPlayerOnStartEnable = true;
+            MaxPlayerOnStart = 24;
         }
     }
 }

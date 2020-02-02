@@ -1,8 +1,11 @@
 ﻿using Rocket.API.Collections;
 using Rocket.Core.Plugins;
+using Rocket.Unturned;
 using Rocket.Unturned.Chat;
+using Rocket.Unturned.Permissions;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using Steamworks;
 using System;
 using UnityEngine;
 using Logger = Rocket.Core.Logging.Logger;
@@ -14,33 +17,44 @@ namespace Tortellio.DynamicMaxPlayers
     {
         public static DynamicMaxPlayers Instance;
 		public static string PluginName = "DynamicMaxPlayers";
-        public static string PluginVersion = " 1.0.0";
-        private DateTime lastCalled;
-        public byte oldMaxPlayer;
+        public static string PluginVersion = " 1.0.1";
+
+        public byte baseMaxPlayers;
         public byte forceMaxPlayer = 0;
         protected override void Load()
         {
             Instance = this;
-            oldMaxPlayer = Provider.maxPlayers;
+            baseMaxPlayers = Provider.maxPlayers;
+            if (Configuration.Instance.MaxPlayerOnStartEnable)
+            {
+                Provider.maxPlayers = Configuration.Instance.MaxPlayerOnStart;
+                baseMaxPlayers = Configuration.Instance.MaxPlayerOnStart;
+            }
             Logger.Log("DynamicMaxPlayer has been loaded!");
 			Logger.Log(PluginName + PluginVersion, ConsoleColor.Yellow);
             Logger.Log("Made by Tortellio", ConsoleColor.Yellow);
             if (!Configuration.Instance.Enable)
             {
                 Logger.Log("DynamicMaxPlayer is disabled in configuration!", ConsoleColor.Red);
+                Unload();
                 return;
             }
-            Logger.Log("Server Max Players changed to " + Provider.maxPlayers.ToString() + " Players", ConsoleColor.Yellow);
+ 
+            UnturnedPermissions.OnJoinRequested += OnPlayerConnect;
+            U.Events.OnPlayerConnected += OnPlayerJoin;
         }
 
         protected override void Unload()
         {
             Instance = null;
-            Provider.maxPlayers = oldMaxPlayer;
+            Provider.maxPlayers = baseMaxPlayers;
             Logger.Log("DynamicMaxPlayer has been unloaded!");
 			Logger.Log("Visit Tortellio Discord for more! https://discord.gg/pzQwsew", ConsoleColor.Yellow);
             if (!Configuration.Instance.Enable) { return; }
             Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + " Players)", ConsoleColor.Yellow);
+
+            UnturnedPermissions.OnJoinRequested -= OnPlayerConnect;
+            U.Events.OnPlayerConnected -= OnPlayerJoin;
         }
         public override TranslationList DefaultTranslations => new TranslationList()
         {
@@ -52,22 +66,31 @@ namespace Tortellio.DynamicMaxPlayers
             { "mp_error", "Something went wrong. Input a number." },
 
         };
-        public void FixedUpdate()
+
+        private void OnPlayerConnect(CSteamID steamID, ref ESteamRejection? rejection)
         {
-            if (!Configuration.Instance.Enable) { return; }
-            if (forceMaxPlayer != 0) { return; }
-            if ((DateTime.Now - lastCalled).TotalSeconds > 1)
+            if(forceMaxPlayer == 0 && Provider.clients.Count >= Provider.maxPlayers)
             {
-                lastCalled = DateTime.Now;
-                if (Provider.clients.Count >= (Provider.maxPlayers - 1) && (Provider.maxPlayers + Configuration.Instance.IncreasedMaxPlayersAmount) < 255)
-                {
-                    Provider.maxPlayers = (byte)(Provider.maxPlayers + Configuration.Instance.IncreasedMaxPlayersAmount);
-                }    
-                else if (Provider.clients.Count <= (Provider.maxPlayers - Configuration.Instance.IncreasedMaxPlayersAmount) && Provider.maxPlayers > oldMaxPlayer)
-                {
-                    Provider.maxPlayers = (byte)(Provider.maxPlayers - Configuration.Instance.IncreasedMaxPlayersAmount);
-                }
+                Provider.maxPlayers = Configuration.Instance.MaxSlots;
             }
+            else if(forceMaxPlayer != 0 && Provider.clients.Count >= Provider.maxPlayers)
+            {
+                Provider.maxPlayers = Configuration.Instance.MaxSlots;
+            }
+            Logger.Log(Translate("mps") + Provider.clients.Count.ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
+        }
+
+        private void OnPlayerJoin(UnturnedPlayer player)
+        {
+            if(forceMaxPlayer == 0)
+            {
+                Provider.maxPlayers = baseMaxPlayers;
+            }
+            else if(forceMaxPlayer != 0)
+            {
+                Provider.maxPlayers = forceMaxPlayer;
+            }
+            Logger.Log(Translate("mps") + Provider.clients.Count.ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
         }
     }
 }
