@@ -30,11 +30,11 @@ namespace Tortellio.DynamicMaxPlayers.Commands
             if (maxPlayer == 0)
             {
                 UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mp_set_normal"));
-                DynamicMaxPlayers.Instance.forceMaxPlayer = maxPlayer;
+                DynamicMaxPlayers.forceMaxPlayer = maxPlayer;
                 return;
             }
             Provider.maxPlayers = maxPlayer;
-            DynamicMaxPlayers.Instance.forceMaxPlayer = maxPlayer;
+            DynamicMaxPlayers.forceMaxPlayer = maxPlayer;
             UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mp_set") + maxPlayer.ToString() + " players");
         }
     }

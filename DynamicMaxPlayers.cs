@@ -19,10 +19,12 @@ namespace Tortellio.DynamicMaxPlayers
     {
         public static DynamicMaxPlayers Instance;
 		public static string PluginName = "DynamicMaxPlayers";
-        public static string PluginVersion = " 1.0.3";
+        public static string PluginVersion = " 1.0.4";
 
-        public byte baseMaxPlayers;
-        public byte forceMaxPlayer = 0;
+        public static byte baseMaxPlayers;
+        public static byte forceMaxPlayer = 0;
+        public static Coroutine cor;
+
         protected override void Load()
         {
             Instance = this;
@@ -70,18 +72,19 @@ namespace Tortellio.DynamicMaxPlayers
 
         private void OnPlayerConnect(CSteamID steamID, ref ESteamRejection? rejection)
         {
+            if (cor != null) StopCoroutine(cor);
             Provider.maxPlayers = Configuration.Instance.MaxSlots;
             Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
         }
         
         private void OnPlayerJoin(UnturnedPlayer player)
         {
-            StartCoroutine(Count());
+            cor = StartCoroutine(Count());
         }
 
         private IEnumerator<WaitForSeconds> Count()
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
             if (forceMaxPlayer == 0)
             {
                 Provider.maxPlayers = baseMaxPlayers;
