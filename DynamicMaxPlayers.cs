@@ -7,6 +7,8 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Logger = Rocket.Core.Logging.Logger;
 using Math = System.Math;
@@ -17,7 +19,7 @@ namespace Tortellio.DynamicMaxPlayers
     {
         public static DynamicMaxPlayers Instance;
 		public static string PluginName = "DynamicMaxPlayers";
-        public static string PluginVersion = " 1.0.1";
+        public static string PluginVersion = " 1.0.3";
 
         public byte baseMaxPlayers;
         public byte forceMaxPlayer = 0;
@@ -39,7 +41,7 @@ namespace Tortellio.DynamicMaxPlayers
                 Unload();
                 return;
             }
- 
+
             UnturnedPermissions.OnJoinRequested += OnPlayerConnect;
             U.Events.OnPlayerConnected += OnPlayerJoin;
         }
@@ -63,34 +65,32 @@ namespace Tortellio.DynamicMaxPlayers
             { "mps", "Current server max players : " },
             { "mps_usage", "Error in command. Try /mps or /mplayers" },
             { "mp_usage", "Error in command. Try /mp amount or /setmp amount or /maxplayer amount" },
-            { "mp_error", "Something went wrong. Input a number." },
-
+            { "mp_error", "Something went wrong. Input a number." }
         };
 
         private void OnPlayerConnect(CSteamID steamID, ref ESteamRejection? rejection)
         {
-            if(forceMaxPlayer == 0 && Provider.clients.Count >= Provider.maxPlayers)
-            {
-                Provider.maxPlayers = Configuration.Instance.MaxSlots;
-            }
-            else if(forceMaxPlayer != 0 && Provider.clients.Count >= Provider.maxPlayers)
-            {
-                Provider.maxPlayers = Configuration.Instance.MaxSlots;
-            }
-            Logger.Log(Translate("mps") + Provider.clients.Count.ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
+            Provider.maxPlayers = Configuration.Instance.MaxSlots;
+            Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
         }
-
+        
         private void OnPlayerJoin(UnturnedPlayer player)
         {
-            if(forceMaxPlayer == 0)
+            StartCoroutine(Count());
+        }
+
+        private IEnumerator<WaitForSeconds> Count()
+        {
+            yield return new WaitForSeconds(1f);
+            if (forceMaxPlayer == 0)
             {
                 Provider.maxPlayers = baseMaxPlayers;
             }
-            else if(forceMaxPlayer != 0)
+            else if (forceMaxPlayer != 0)
             {
                 Provider.maxPlayers = forceMaxPlayer;
             }
-            Logger.Log(Translate("mps") + Provider.clients.Count.ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
+            Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
         }
     }
 }
