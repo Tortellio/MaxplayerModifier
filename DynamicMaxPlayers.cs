@@ -19,11 +19,11 @@ namespace Tortellio.DynamicMaxPlayers
     {
         public static DynamicMaxPlayers Instance;
 		public static string PluginName = "DynamicMaxPlayers";
-        public static string PluginVersion = " 1.0.4";
+        public static string PluginVersion = " 1.0.5";
 
         public static byte baseMaxPlayers;
         public static byte forceMaxPlayer = 0;
-        public static Coroutine cor;
+        //public static Coroutine cor;
 
         protected override void Load()
         {
@@ -44,8 +44,8 @@ namespace Tortellio.DynamicMaxPlayers
                 return;
             }
 
-            UnturnedPermissions.OnJoinRequested += OnPlayerConnect;
-            U.Events.OnPlayerConnected += OnPlayerJoin;
+            UnturnedPermissions.OnJoinRequested += OnPlayerJoin;
+            U.Events.OnPlayerConnected += OnPlayerConnect;
         }
 
         protected override void Unload()
@@ -57,9 +57,10 @@ namespace Tortellio.DynamicMaxPlayers
             if (!Configuration.Instance.Enable) { return; }
             Logger.Log("Server Max Players changed back to normal! (" + Provider.maxPlayers.ToString() + " Players)", ConsoleColor.Yellow);
 
-            UnturnedPermissions.OnJoinRequested -= OnPlayerConnect;
-            U.Events.OnPlayerConnected -= OnPlayerJoin;
+            UnturnedPermissions.OnJoinRequested -= OnPlayerJoin;
+            U.Events.OnPlayerConnected -= OnPlayerConnect;
         }
+
         public override TranslationList DefaultTranslations => new TranslationList()
         {
             { "mp_set", "Succesfully set max player to : " },
@@ -70,19 +71,30 @@ namespace Tortellio.DynamicMaxPlayers
             { "mp_error", "Something went wrong. Input a number." }
         };
 
-        private void OnPlayerConnect(CSteamID steamID, ref ESteamRejection? rejection)
+        private void OnPlayerJoin(CSteamID steamID, ref ESteamRejection? rejection)
         {
-            if (cor != null) StopCoroutine(cor);
+            if (Provider.clients.Count >= Provider.maxPlayers)
+            {
+                foreach (var pending in Provider.pending)
+                {
+                    if (Provider.clients.Count + 1 <= Configuration.Instance.MaxPlayersSlot)
+                    {
+                        Provider.accept(pending);
+                    }
+                }
+            }
+            /*if (cor != null) StopCoroutine(cor);
             Provider.maxPlayers = Configuration.Instance.MaxSlots;
-            Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
+            Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);*/
         }
         
-        private void OnPlayerJoin(UnturnedPlayer player)
+        private void OnPlayerConnect(UnturnedPlayer player)
         {
-            cor = StartCoroutine(Count());
+            /*cor = StartCoroutine(Count());*/
+            Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
         }
 
-        private IEnumerator<WaitForSeconds> Count()
+        /*private IEnumerator<WaitForSeconds> Count()
         {
             yield return new WaitForSeconds(2f);
             if (forceMaxPlayer == 0)
@@ -94,6 +106,6 @@ namespace Tortellio.DynamicMaxPlayers
                 Provider.maxPlayers = forceMaxPlayer;
             }
             Logger.Log(Translate("mps") + (Provider.clients.Count).ToString() + "/" + Provider.maxPlayers.ToString(), ConsoleColor.Yellow);
-        }
+        }*/
     }
 }
