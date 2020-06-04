@@ -97,7 +97,7 @@ namespace Tortellio.MaxplayerModifier
 
         private void OnPlayerDisconnect(UnturnedPlayer player)
         {
-            if (Provider.clients.Count > baseMaxPlayers) 
+            if (Provider.clients.Count >= baseMaxPlayers) 
             {
                 Provider.maxPlayers--;
                 if (Provider.maxPlayers < baseMaxPlayers)
