@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMaxPlayers", "DynamicMaxPlayers.csproj", "{252FF3FC-49BA-40BC-B690-710F0BC3234B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaxplayerModifier", "MaxplayerModifier.csproj", "{252FF3FC-49BA-40BC-B690-710F0BC3234B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

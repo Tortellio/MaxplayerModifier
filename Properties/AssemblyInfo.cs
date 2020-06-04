@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DynamicMaxPlayers")]
+[assembly: AssemblyTitle("MaxplayerModifier")]
 [assembly: AssemblyDescription("Made by Tortellio")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tortellio")]
-[assembly: AssemblyProduct("DynamicMaxPlayers")]
+[assembly: AssemblyProduct("MaxplayerModifier")]
 [assembly: AssemblyCopyright("Copyright © 2019 Tortellio")]
 [assembly: AssemblyTrademark("Tortellio")]
 [assembly: AssemblyCulture("")]

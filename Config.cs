@@ -1,19 +1,24 @@
 ﻿using Rocket.API;
+using Steamworks;
 
-namespace Tortellio.DynamicMaxPlayers
+namespace Tortellio.MaxplayerModifier
 {
     public class Config : IRocketPluginConfiguration
     {
-        public bool Enable;
-        public byte MaxPlayersSlot;
-        public bool MaxPlayerOnStartEnable;
+        public bool EnableMaxPlayerOnStart;
         public byte MaxPlayerOnStart;
+        public bool EnableFakePlayerOnStart;
+        public byte FakePlayerOnStart;
+        public bool EnableDynamicMaxPlayer;
+        public byte MaximumDynamicSlot;
         public void LoadDefaults()
         {
-            Enable = true;
-            MaxPlayersSlot = 48;
-            MaxPlayerOnStartEnable = true;
+            EnableMaxPlayerOnStart = true;
             MaxPlayerOnStart = 24;
+            EnableFakePlayerOnStart = true;
+            FakePlayerOnStart = 1;
+            EnableDynamicMaxPlayer = true;
+            MaximumDynamicSlot = 40;
         }
     }
 }

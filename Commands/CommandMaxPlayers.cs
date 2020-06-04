@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SDG.Unturned;
 using Rocket.Unturned.Chat;
 
-namespace Tortellio.DynamicMaxPlayers.Commands
+namespace Tortellio.MaxplayerModifier.Commands
 {
     public class CommandMaxPlayers : IRocketCommand
     {
@@ -18,10 +18,10 @@ namespace Tortellio.DynamicMaxPlayers.Commands
 
             if (command.Length != 0)
             {
-                UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mps_usage"));
+                UnturnedChat.Say(caller, Main.Instance.Translate("mps_usage"));
                 return;
             }
-            UnturnedChat.Say(caller, DynamicMaxPlayers.Instance.Translate("mps") + Provider.maxPlayers.ToString() + " players");
+            UnturnedChat.Say(caller, Main.Instance.Translate("mps") + Provider.maxPlayers.ToString() + " players");
         }
     }
 }
