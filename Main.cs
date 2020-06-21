@@ -13,7 +13,7 @@ namespace Tortellio.MaxplayerModifier
     {
         public static Main Instance;
 		public static string PluginName = "MaxplayerModifier";
-        public static string PluginVersion = " 1.0.6";
+        public static string PluginVersion = " 1.0.7";
         public static byte baseMaxPlayers;
 
         protected override void Load()
@@ -24,17 +24,20 @@ namespace Tortellio.MaxplayerModifier
             {
                 baseMaxPlayers = Configuration.Instance.MaxPlayerOnStart;
             }
-
-            Logger.Log("MaxplayerModifier has been loaded!", ConsoleColor.Yellow);
-			Logger.Log(PluginName + PluginVersion, ConsoleColor.Yellow);
-            Logger.Log("Made by Tortellio", ConsoleColor.Yellow);
-
-            Level.onPreLevelLoaded += ClampMaxPlayers;
             if (Configuration.Instance.EnableDynamicMaxPlayer)
             {
                 U.Events.OnPlayerConnected += OnPlayerConnect;
                 U.Events.OnPlayerDisconnected += OnPlayerDisconnect;
             }
+            if (Level.isLoaded)
+            {
+                ClampMaxPlayers();
+            }
+            Logger.Log("MaxplayerModifier has been loaded!", ConsoleColor.Yellow);
+			Logger.Log(PluginName + PluginVersion, ConsoleColor.Yellow);
+            Logger.Log("Made by Tortellio", ConsoleColor.Yellow);
+
+            Level.onPreLevelLoaded += ClampMaxPlayers;
         }
 
         protected override void Unload()
@@ -55,34 +58,34 @@ namespace Tortellio.MaxplayerModifier
 
         public override TranslationList DefaultTranslations => new TranslationList()
         {
-            { "fp_set", "Succesfully set fake player to : " },
             { "mp_set", "Succesfully set max player to : " },
             { "mp_set_normal", "Succesfully set max player to normal" },
             { "mps", "Current server max players : " },
             { "mps_usage", "Error in command. Try /mps or /mplayers" },
             { "mp_usage", "Error in command. Try /mp amount or /setmp amount or /maxplayer amount" },
             { "mp_error", "Something went wrong. Input a number." },
-            { "fp_usage", "Error in command. Try /fp amount or /setfp amount or /fakeplayer amount" },
-            { "fp_error", "Something went wrong. Input a number." }
         };
+
+        private void ClampMaxPlayers()
+        {
+            if (Provider.maxPlayers > 24)
+            {
+                SteamGameServer.SetMaxPlayerCount(24);
+            }
+        }
 
         private void ClampMaxPlayers(int level)
         {
             if (Provider.maxPlayers > 24)
             {
                 SteamGameServer.SetMaxPlayerCount(24);
-                System.Console.WriteLine("MaxPlayers Clamped");
             }
             if (Configuration.Instance.EnableMaxPlayerOnStart)
             {
                 Provider.maxPlayers = Configuration.Instance.MaxPlayerOnStart;
             }
-            if (Configuration.Instance.EnableFakePlayerOnStart)
-            {
-                SteamGameServer.SetBotPlayerCount(Configuration.Instance.FakePlayerOnStart);
-            }
         }
-        
+
         private void OnPlayerConnect(UnturnedPlayer player)
         {
             if (Provider.maxPlayers == Provider.clients.Count && Provider.maxPlayers + 1 != Configuration.Instance.MaximumDynamicSlot)
